@@ -2,11 +2,19 @@ import GameHeader from "./GameHeader";
 import DiceBoard from "./DiceBoard";
 import GameControls from "./GameControls";
 import "./game.css";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { nanoid } from "nanoid";
 
 export default function Game() {
   const [holdNum, setNum] = useState(() => generateDice());
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (gameWon) {
+      buttonRef.current.focus();
+    }
+  }, [holdNum]);
+
   const gameWon = holdNum.every(
     (die) => die.isHeld && die.num === holdNum[0].num
   );
@@ -55,7 +63,7 @@ const roll = () => {
         setNum={setNum}
         toggleHold={toggleHold}
       />
-      <GameControls roll={roll} holdNum={holdNum} />
+      <GameControls roll={roll} holdNum={holdNum} buttonRef={buttonRef} />
     </section>
   );
 }
