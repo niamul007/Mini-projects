@@ -3,32 +3,59 @@ import DiceBoard from "./DiceBoard";
 import GameControls from "./GameControls";
 import "./game.css";
 import { useState } from "react";
+import { nanoid } from "nanoid";
 
 export default function Game() {
+  const [holdNum, setNum] = useState(() => generateDice());
+  const gameWon = holdNum.every(
+    (die) => die.isHeld && die.num === holdNum[0].num
+  );
 
-  const generateDice = () => {
+  function generateDice() {
     const numbers = [];
     for (let i = 0; i < 10; i++) {
       numbers.push({
-        id: crypto.randomUUID(),
+        id: nanoid(),
         num: Math.floor(Math.random() * 6) + 1,
-        isHeld: false
+        isHeld: false,
       });
     }
     return numbers;
-  };
+  }
 
-  const [holdNum, setNum] = useState(generateDice);
+const roll = () => {
+  if (!gameWon) {
+    // 1. If we HAVEN'T won yet, roll the dice that aren't held
+    setNum(prevNum => prevNum.map(die => {
+      return die.isHeld 
+        ? die 
+        : { ...die, num: Math.floor(Math.random() * 6) + 1 };
+    }));
+  } else {
+    // 2. If we HAVE won, reset the game for a new round
+    setNum(generateDice());
+  }
+};
 
-  const roll = () => {
-    setNum(generateDice);
-  };
+  function toggleHold(id) {
+    setNum((prevNum) =>
+      prevNum.map((die) =>
+        die.id === id ? { ...die, isHeld: !die.isHeld } : die
+      )
+    );
+    console.log(id);
+  }
 
   return (
     <section className="game">
       <GameHeader />
-      <DiceBoard key={holdNum} holdNum={holdNum} setNum={setNum} />
-      <GameControls roll={roll} />
+      <DiceBoard
+        key={holdNum}
+        holdNum={holdNum}
+        setNum={setNum}
+        toggleHold={toggleHold}
+      />
+      <GameControls roll={roll} holdNum={holdNum} />
     </section>
   );
 }
