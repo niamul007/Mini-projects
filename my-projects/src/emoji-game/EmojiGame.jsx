@@ -6,7 +6,7 @@ export default function EmojiGame() {
   const [timeLeft, setTimeLeft] = React.useState(30);
   // 2. state: score (how many bugs you've smashed)
   // 3. state: timeLeft (a countdown from 30 to 0)
-const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false);
   // HELPER: An array of 9 items to create the grid
   const holes = Array(9).fill(null);
 
@@ -17,25 +17,28 @@ const [isActive, setIsActive] = useState(false)
 
   function startGame() {
     randomHole();
-    setIsActive(true)
-    setTimeLeft(30)
+    setIsActive(true);
+    setTimeLeft(30);
     setScore(0);
   }
-
+  // 1. Create a function to handle the smash
+  function smashBug() {
+    setScore((prev) => prev + 1); // Functional update for safety
+    setActiveHole(null); // Make the bug disappear immediately after clicking!
+  }
 
   useEffect(() => {
     let timer;
-    if(isActive && timeLeft > 0){
+    if (isActive && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
         randomHole();
       }, 1000);
-    }else if(timeLeft === 0){
-      setIsActive(false)
+    } else if (timeLeft === 0) {
+      setIsActive(false);
     }
     return () => clearInterval(timer);
   }, [isActive, timeLeft]);
-
 
   return (
     <div style={styles.container}>
@@ -54,13 +57,18 @@ const [isActive, setIsActive] = useState(false)
       <div style={styles.grid}>
         {holes.map((_, index) => (
           <div key={index} style={styles.hole}>
-            {/* LOGIC: Only show the bug if (activeHole === index) */}
-            {activeHole === index && <button style={styles.bug} onClick={() => setScore(score + 1)}>🪲</button>}
+            {activeHole === index && timeLeft > 0 && (
+              <button style={styles.bug} onClick={smashBug}>
+                🪲
+              </button>
+            )}
           </div>
         ))}
       </div>
 
-      <button style={styles.startBtn} onClick={startGame}>Start Hunting</button>
+      <button style={styles.startBtn} onClick={startGame}>
+        Start Hunting
+      </button>
     </div>
   );
 }
