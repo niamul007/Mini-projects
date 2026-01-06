@@ -13,24 +13,13 @@ export default function BudgetList() {
       name: item,
       price: parseFloat(price),
     };
-    console.log(newItem);
+    if (item === "" || price === "") {
+      return;
+    } else {
+      setItems([...items, newItem]);
+    }
   }
-
-  function addItem() {
-    // Logic to add item goes here
-  }
-
-  //   function showItems(formData) {
-  //     const item = formData.get("item-name");
-  //     const price = formData.get("item-price");
-  //     setNameInput(item);
-  //     setPriceInput(price);
-  //     console.log(item, price);
-  //     newItem.push({ id: Date.now(), name: item, price: parseFloat(price) });
-  //     setItems([...items, ...newItem]);
-  //     console.log(items);
-  //   }
-
+  console.log(items);
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -59,12 +48,15 @@ export default function BudgetList() {
 
         {/* THE LIST */}
         <div style={styles.list}>
-          {/* LOGIC: items.map() goes here */}
-          <div style={styles.listItem}>
-            <span>Example Item</span>
-            <span>$0.00</span>
-            <button style={styles.deleteBtn}>x</button>
-          </div>
+          {items.map((item , index) => {
+            return (
+              <div key={index} style={styles.listItem}>
+                <span>{item.name}</span>
+                <span>${item.price.toFixed(2)}</span>
+                <button style={styles.deleteBtn}>x</button>
+              </div>
+            );
+          })}
         </div>
 
         {/* THE CALCULATION */}
@@ -78,7 +70,7 @@ export default function BudgetList() {
 
 const styles = {
   container: {
-    backgroundColor: "#f0f2f5",
+    backgroundColor: "#4d79bcff",
     minHeight: "100vh",
     padding: "40px",
     display: "flex",
@@ -86,7 +78,7 @@ const styles = {
     fontFamily: "sans-serif",
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: "#292525ff",
     padding: "30px",
     borderRadius: "20px",
     boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
