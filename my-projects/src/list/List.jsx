@@ -19,7 +19,14 @@ export default function BudgetList() {
       setItems([...items, newItem]);
     }
   }
+
+  function deleteItem(idToDelete) {
+    const updatedItems = items.filter((item) => item.id !== idToDelete);
+    setItems(updatedItems);
+  }
   console.log(items);
+
+  
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -48,12 +55,17 @@ export default function BudgetList() {
 
         {/* THE LIST */}
         <div style={styles.list}>
-          {items.map((item , index) => {
+          {items.map((item, index) => {
             return (
               <div key={index} style={styles.listItem}>
                 <span>{item.name}</span>
                 <span>${item.price.toFixed(2)}</span>
-                <button style={styles.deleteBtn}>x</button>
+                <button
+                  onClick={() => deleteItem(item.id)}
+                  style={styles.deleteBtn}
+                >
+                  x
+                </button>
               </div>
             );
           })}
