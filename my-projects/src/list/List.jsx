@@ -24,9 +24,10 @@ export default function BudgetList() {
     const updatedItems = items.filter((item) => item.id !== idToDelete);
     setItems(updatedItems);
   }
-  console.log(items);
 
-  
+  console.log(items);
+  const totalAmount = items.reduce((total, item) => total + item.price, 0);
+
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -34,21 +35,20 @@ export default function BudgetList() {
 
         {/* INPUT SECTION */}
         <div style={styles.inputGroup}>
-          <form action={addData}>
-            <input
-              type="text"
-              placeholder="Item name..."
-              name="item-name"
-              style={styles.input}
-            />
-            <input
-              type="number"
-              placeholder="$"
-              name="item-price"
-              style={styles.priceInput}
-            />
+          <form
+            action={addData}
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            <div style={{ display: "flex", gap: "10px" }}>
+              <input name="item-name" placeholder="Item" style={styles.input} />
+              <input
+                name="item-price"
+                placeholder="$"
+                style={styles.priceInput}
+              />
+            </div>
             <button type="submit" style={styles.addBtn}>
-              Add
+              Add to List
             </button>
           </form>
         </div>
@@ -73,7 +73,8 @@ export default function BudgetList() {
 
         {/* THE CALCULATION */}
         <div style={styles.totalSection}>
-          Total: <span style={styles.totalAmount}>$0.00</span>
+          Total:{" "}
+          <span style={styles.totalAmount}>${totalAmount.toFixed(2)}</span>
         </div>
       </div>
     </div>
@@ -82,67 +83,104 @@ export default function BudgetList() {
 
 const styles = {
   container: {
-    backgroundColor: "#4d79bcff",
+    backgroundColor: "#0f172a", // Deep Midnight Blue
     minHeight: "100vh",
-    padding: "40px",
+    padding: "40px 20px",
     display: "flex",
     justifyContent: "center",
-    fontFamily: "sans-serif",
+    alignItems: "flex-start",
+    fontFamily: "'Inter', -apple-system, sans-serif",
   },
   card: {
-    backgroundColor: "#292525ff",
-    padding: "30px",
-    borderRadius: "20px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+    backgroundColor: "#1e293b", // Slate Blue Card
+    padding: "32px",
+    borderRadius: "24px",
+    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.4)",
     width: "100%",
     maxWidth: "450px",
+    border: "1px solid #334155",
+    color: "#f8fafc",
   },
-  inputGroup: { display: "flex", gap: "10px", marginBottom: "20px" },
+  inputGroup: { 
+    marginBottom: "24px",
+  },
+  // This wrapper makes sure the inputs sit nicely side-by-side
+  inputRow: {
+    display: "flex",
+    gap: "12px",
+    marginBottom: "12px",
+  },
   input: {
-    flex: 2,
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
+    flex: 3, // Takes up 3x more space than the price
+    padding: "12px 16px",
+    borderRadius: "12px",
+    border: "1px solid #334155",
+    backgroundColor: "#0f172a",
+    color: "#f8fafc",
+    fontSize: "15px",
+    outline: "none",
   },
   priceInput: {
-    flex: 1,
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
+    flex: 1, // Takes up minimal space
+    maxWidth: "100px", // Limits the width of the dollar box
+    padding: "12px 16px",
+    borderRadius: "12px",
+    border: "1px solid #334155",
+    backgroundColor: "#0f172a",
+    color: "#f8fafc",
+    fontSize: "15px",
+    outline: "none",
   },
   addBtn: {
-    padding: "10px 20px",
-    backgroundColor: "#2ecc71",
+    width: "100%",
+    padding: "14px",
+    backgroundColor: "#3b82f6", // Electric Blue
     color: "white",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "12px",
     cursor: "pointer",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: "16px",
+    marginTop: "8px",
   },
-  list: { borderTop: "1px solid #eee", paddingTop: "20px" },
+  list: { 
+    borderTop: "1px solid #334155", 
+    paddingTop: "24px",
+    marginTop: "12px" 
+  },
   listItem: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "10px",
-    borderBottom: "1px solid #f9f9f9",
+    padding: "16px",
+    backgroundColor: "#334155",
+    borderRadius: "16px",
+    marginBottom: "12px",
+    border: "1px solid #475569",
   },
   deleteBtn: {
-    backgroundColor: "#ff4d4d",
-    color: "white",
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    color: "#ef4444",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: "8px",
     cursor: "pointer",
-    padding: "2px 8px",
+    padding: "6px 12px",
+    fontWeight: "bold",
+    fontSize: "12px",
   },
   totalSection: {
-    marginTop: "20px",
-    paddingTop: "20px",
-    borderTop: "2px solid #333",
+    marginTop: "24px",
+    padding: "20px",
+    backgroundColor: "#0f172a",
+    borderRadius: "16px",
     display: "flex",
     justifyContent: "space-between",
-    fontSize: "1.4rem",
-    fontWeight: "bold",
+    alignItems: "center",
+    border: "1px solid #3b82f6",
   },
-  totalAmount: { color: "#2ecc71" },
+  totalAmount: { 
+    color: "#2ecc71", // Fresh Green for money
+    fontSize: "1.6rem",
+    fontWeight: "700"
+  },
 };
