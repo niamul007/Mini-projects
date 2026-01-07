@@ -5,6 +5,11 @@ export default function WealthTracker() {
 
   const [transactions, setTransactions] = React.useState([]);
   const [showAll, setShowAll] = React.useState(false);
+  // If showAll is true, take the whole array.
+  // If false, take only the first 3 items using .slice()
+  const displayedTransactions = showAll
+    ? transactions
+    : transactions.slice(0, 3);
 
   const today = new Date().toLocaleDateString("en-US", {
     month: "2-digit",
@@ -118,23 +123,35 @@ export default function WealthTracker() {
         <section style={styles.historySection}>
           <div style={styles.historyHeader}>
             <h3 style={styles.sectionTitle}>Recent History</h3>
-            <button style={styles.filterBtn} onClick={()=> setShowAll(!showAll)}>View All</button>
+            {showAll && (
+              <button
+                style={styles.filterBtn}
+                onClick={() => setShowAll(!showAll)}
+              >
+                {showAll ? "Show Less" : "View All"}
+              </button>
+            )}
           </div>
 
           <div style={styles.listContainer}>
-            {transactions.map((item) => {
+            {displayedTransactions.map((item) => {
               return (
-                <div key={item.id}
+                <div
+                  key={item.id}
                   style={{
                     ...styles.transactionCard,
-                    borderLeft: `5px solid ${item.type === "income" ? "#2ecc71" : "#ff4d4d"}`,
+                    borderLeft: `5px solid ${
+                      item.type === "income" ? "#2ecc71" : "#ff4d4d"
+                    }`,
                   }}
                 >
                   <div>
                     <p style={styles.itemDesc}>{item.description}</p>
                     <small style={{ color: "#64748b" }}>{item.date}</small>
                   </div>
-                  <span style={styles.itemAmount}>${ item.type === "income" ? item.amount : -item.amount}</span>
+                  <span style={styles.itemAmount}>
+                    ${item.type === "income" ? item.amount : -item.amount}
+                  </span>
                 </div>
               );
             })}
