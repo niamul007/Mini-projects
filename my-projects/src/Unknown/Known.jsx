@@ -123,7 +123,7 @@ export default function WealthTracker() {
         <section style={styles.historySection}>
           <div style={styles.historyHeader}>
             <h3 style={styles.sectionTitle}>Recent History</h3>
-            {showAll && (
+            {transactions.length > 3 > 0 && (
               <button
                 style={styles.filterBtn}
                 onClick={() => setShowAll(!showAll)}
