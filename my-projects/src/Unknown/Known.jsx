@@ -4,6 +4,8 @@ export default function WealthTracker() {
   // Logic and Props go here later
 
   const [transactions, setTransactions] = React.useState([]);
+  const [showAll, setShowAll] = React.useState(false);
+
   const today = new Date().toLocaleDateString("en-US", {
     month: "2-digit",
     day: "numeric",
@@ -27,6 +29,18 @@ export default function WealthTracker() {
       setTransactions([...transactions, newTransaction]);
     }
   }
+
+  //total balance, income, expense calculations will go here later
+
+  const totalIncome = transactions
+    .filter((item) => item.type === "income")
+    .reduce((acc, item) => acc + item.amount, 0);
+  const totalExpense = transactions
+    .filter((item) => item.type === "expense")
+    .reduce((acc, item) => acc + item.amount, 0);
+
+  const totalBalance = totalIncome - totalExpense;
+  const calculations = totalBalance.toFixed(2);
   console.log(transactions);
 
   return (
@@ -52,19 +66,25 @@ export default function WealthTracker() {
           <div style={styles.statBox}>
             <span style={styles.statLabel}>Total Balance</span>
             {/* Logic: Income - Expenses */}
-            <h2 style={{ ...styles.statValue, color: "#fff" }}>$0.00</h2>
+            <h2 style={{ ...styles.statValue, color: "#fff" }}>
+              ${calculations}
+            </h2>
           </div>
 
           <div style={styles.statBox}>
             <span style={styles.statLabel}>Total Income</span>
             {/* Logic: Filter 'income' -> reduce */}
-            <h2 style={{ ...styles.statValue, color: "#2ecc71" }}>+$0.00</h2>
+            <h2 style={{ ...styles.statValue, color: "#2ecc71" }}>
+              +${totalIncome}
+            </h2>
           </div>
 
           <div style={styles.statBox}>
             <span style={styles.statLabel}>Total Expenses</span>
             {/* Logic: Filter 'expense' -> reduce */}
-            <h2 style={{ ...styles.statValue, color: "#ff4d4d" }}>-$0.00</h2>
+            <h2 style={{ ...styles.statValue, color: "#ff4d4d" }}>
+              -${totalExpense}
+            </h2>
           </div>
         </section>
 
@@ -98,23 +118,27 @@ export default function WealthTracker() {
         <section style={styles.historySection}>
           <div style={styles.historyHeader}>
             <h3 style={styles.sectionTitle}>Recent History</h3>
-            <button style={styles.filterBtn}>View All</button>
+            <button style={styles.filterBtn} onClick={()=> setShowAll(!showAll)}>View All</button>
           </div>
 
           <div style={styles.listContainer}>
-            {/* Placeholder for mapping logic */}
-            <div
-              style={{
-                ...styles.transactionCard,
-                borderLeft: "5px solid #3b82f6",
-              }}
-            >
-              <div>
-                <p style={styles.itemDesc}>Sample Transaction</p>
-                <small style={{ color: "#64748b" }}>Jan 07, 2026</small>
-              </div>
-              <span style={styles.itemAmount}>$0.00</span>
-            </div>
+            {transactions.map((item) => {
+              return (
+                <div key={item.id}
+                  style={{
+                    ...styles.transactionCard,
+                    borderLeft: `5px solid ${item.type === "income" ? "#2ecc71" : "#ff4d4d"}`,
+                  }}
+                >
+                  <div>
+                    <p style={styles.itemDesc}>{item.description}</p>
+                    <small style={{ color: "#64748b" }}>{item.date}</small>
+                  </div>
+                  <span style={styles.itemAmount}>${ item.type === "income" ? item.amount : -item.amount}</span>
+                </div>
+              );
+            })}
+
             {/* End of mapping area */}
           </div>
         </section>
