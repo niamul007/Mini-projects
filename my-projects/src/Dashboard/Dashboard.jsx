@@ -50,8 +50,7 @@ const FinanceDashboard = () => {
     year: "2-digit",
   });
 
-
-    function addFormData(formData) {
+  function addFormData(formData) {
     const title = formData.get("title");
     const amount = parseFloat(formData.get("amount"));
     const type = formData.get("type");
@@ -62,7 +61,7 @@ const FinanceDashboard = () => {
       title: title,
       amount: amount,
       type: type,
-      date: today
+      date: today,
     };
 
     //push the obj to the state now it will rememebr each input because of ...
@@ -153,7 +152,9 @@ const FinanceDashboard = () => {
               <p className="text-xs font-bold text-indigo-200 uppercase tracking-widest">
                 Net Balance
               </p>
-              <p className="text-4xl font-black text-white mt-2">${totalBalance}</p>
+              <p className="text-4xl font-black text-white mt-2">
+                ${totalBalance}
+              </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-20 select-none z-0">
               💎
@@ -243,18 +244,18 @@ const FinanceDashboard = () => {
                       <div
                         className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
                           t.type === "income"
-                            ? "bg-emerald-50 text-emerald-600"
-                            : "bg-rose-50 text-rose-600"
+                            ? "bg-emerald-50/50 border-emerald-100" // Soft Green for Income
+                            : "bg-rose-50/50 border-rose-100" // Soft Red for Expense
                         }`}
                       >
-                        {t.type === "Income" ? "IN" : "EX"}
+                        {t.type === "income" ? "IN" : "EX"}
                       </div>
                       <div>
                         <p className="font-bold text-slate-800 text-lg">
                           {t.title}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
-                          {t.today}
+                          {t.date}
                         </p>
                       </div>
                     </div>
