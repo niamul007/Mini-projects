@@ -44,21 +44,36 @@ const FinanceDashboard = () => {
   const [transaction, setTransaction] = React.useState([]);
 
   function addFormData(formData) {
-
-    const title = formData.get("title")
-    const amount = formData.get("amount")
-    const type = formData.get("type")
+    const title = formData.get("title");
+    const amount = parseFloat(formData.get("amount"));
+    const type = formData.get("type");
 
     //ob for arry push
     const newItem = {
       id: Date.now(),
       title: title,
       amount: amount,
-      type: type
-    }
-    console.log(newItem);
+      type: type,
+    };
 
+    //push the obj to the state now it will rememebr each input because of ...
+    setTransaction([...transaction, newItem]);
   }
+
+  const totalExpense = transaction
+    .filter((item) => item.type === "expense")
+    .reduce((acc, item) => acc + item.amount, 0);
+
+  const totalIncome = transaction
+    .filter((item) => item.type === "income")
+    .reduce((acc, item) => acc + item.amount, 0);
+
+  const totalBalance = totalIncome - totalExpense;
+
+  console.log(totalBalance);
+  console.log(totalIncome);
+  console.log(totalExpense);
+  console.log(transaction);
 
   return (
     <div className="flex w-full min-h-screen bg-[#f1f5f9] text-slate-900 overflow-x-hidden">
@@ -100,7 +115,7 @@ const FinanceDashboard = () => {
                 Total Income
               </p>
               <p className="text-4xl font-black text-emerald-600 mt-2">
-                $5,300.00
+                ${totalIncome}
               </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-10 select-none z-0">
@@ -115,7 +130,7 @@ const FinanceDashboard = () => {
                 Total Expenses
               </p>
               <p className="text-4xl font-black text-rose-600 mt-2">
-                $1,365.00
+                ${totalExpense}
               </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-10 select-none z-0">
@@ -129,7 +144,7 @@ const FinanceDashboard = () => {
               <p className="text-xs font-bold text-indigo-200 uppercase tracking-widest">
                 Net Balance
               </p>
-              <p className="text-4xl font-black text-white mt-2">$3,935.00</p>
+              <p className="text-4xl font-black text-white mt-2">${totalBalance}</p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-20 select-none z-0">
               💎
@@ -157,7 +172,6 @@ const FinanceDashboard = () => {
                     required
                     className="w-full bg-slate-50 border-none p-5 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none"
                     placeholder="e.g. Monthly Salary..."
-
                   />
                 </div>
 
