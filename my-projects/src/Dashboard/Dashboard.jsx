@@ -43,7 +43,15 @@ const FinanceDashboard = () => {
   //Transaction state
   const [transaction, setTransaction] = React.useState([]);
 
-  function addFormData(formData) {
+  //date
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "numeric",
+    year: "2-digit",
+  });
+
+
+    function addFormData(formData) {
     const title = formData.get("title");
     const amount = parseFloat(formData.get("amount"));
     const type = formData.get("type");
@@ -54,6 +62,7 @@ const FinanceDashboard = () => {
       title: title,
       amount: amount,
       type: type,
+      date: today
     };
 
     //push the obj to the state now it will rememebr each input because of ...
@@ -225,7 +234,7 @@ const FinanceDashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {sampleTransactions.map((t) => (
+                {transaction.map((t) => (
                   <div
                     key={t.id}
                     className="flex items-center justify-between p-5 hover:bg-slate-50 rounded-2xl transition border border-transparent hover:border-slate-100 group"
@@ -233,7 +242,7 @@ const FinanceDashboard = () => {
                     <div className="flex items-center gap-5">
                       <div
                         className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
-                          t.type === "Income"
+                          t.type === "income"
                             ? "bg-emerald-50 text-emerald-600"
                             : "bg-rose-50 text-rose-600"
                         }`}
@@ -242,22 +251,22 @@ const FinanceDashboard = () => {
                       </div>
                       <div>
                         <p className="font-bold text-slate-800 text-lg">
-                          {t.name}
+                          {t.title}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
-                          {t.date}
+                          {t.today}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
                       <p
                         className={`text-xl font-black ${
-                          t.type === "Income"
+                          t.type === "income"
                             ? "text-emerald-600"
                             : "text-rose-600"
                         }`}
                       >
-                        {t.type === "Income" ? "+" : "-"}$
+                        {t.type === "income" ? "+" : "-"}$
                         {t.amount.toLocaleString()}
                       </p>
                       <button className="text-slate-300 hover:text-rose-500 transition text-xl">
