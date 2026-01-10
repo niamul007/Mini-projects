@@ -42,7 +42,7 @@ const FinanceDashboard = () => {
 
   //Transaction state
   const [transaction, setTransaction] = React.useState([]);
-  const [listView , setListView] = React.useState(false);
+  const [listView, setListView] = React.useState(false);
 
   //date
   const today = new Date().toLocaleDateString("en-US", {
@@ -52,8 +52,7 @@ const FinanceDashboard = () => {
   });
 
   //for new arr which will ework with list handling
-  const controlListView = listView? transaction: transaction.slice(0, 3);
-
+  const controlListView = listView ? transaction : transaction.slice(0, 3);
 
   function addFormData(formData) {
     const title = formData.get("title");
@@ -240,7 +239,10 @@ const FinanceDashboard = () => {
                   Recent Activity
                 </h3>
                 <span className="text-indigo-600 font-semibold cursor-pointer text-sm">
-                  <button onClick={()=> setListView(!listView)}> {listView ? "Show Less" : "View All"}</button>
+                  <button onClick={() => setListView(!listView)}>
+                    {" "}
+                    {listView ? "Show Less" : "View All"}
+                  </button>
                 </span>
               </div>
 
@@ -248,14 +250,18 @@ const FinanceDashboard = () => {
                 {controlListView.map((t) => (
                   <div
                     key={t.id}
-                    className="flex items-center justify-between p-5 hover:bg-slate-50 rounded-2xl transition border border-transparent hover:border-slate-100 group"
+                    className={`flex items-center justify-between p-5 rounded-3xl transition border group ${
+                      t.type === "income"
+                        ? "bg-emerald-50/40 border-emerald-100/50" // Soft Green Row
+                        : "bg-rose-50/40 border-rose-100/50" // Soft Red Row
+                    }`}
                   >
                     <div className="flex items-center gap-5">
                       <div
                         className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
                           t.type === "income"
-                            ? "bg-emerald-50/50 border-emerald-100" // Soft Green for Income
-                            : "bg-rose-50/50 border-rose-100" // Soft Red for Expense
+                            ? "bg-emerald-500 text-white"
+                            : "bg-rose-500 text-white"
                         }`}
                       >
                         {t.type === "income" ? "IN" : "EX"}
@@ -269,6 +275,7 @@ const FinanceDashboard = () => {
                         </p>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-6">
                       <p
                         className={`text-xl font-black ${
@@ -281,8 +288,8 @@ const FinanceDashboard = () => {
                         {t.amount.toLocaleString()}
                       </p>
                       <button
-                        className="text-slate-300 hover:text-rose-500 transition text-xl"
                         onClick={() => removeList(t.id)}
+                        className="text-slate-300 hover:text-rose-500 transition text-xl"
                       >
                         🗑️
                       </button>
