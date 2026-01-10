@@ -83,6 +83,11 @@ const FinanceDashboard = () => {
   console.log(totalExpense);
   console.log(transaction);
 
+  function removeList(idToDel){
+    const updated = transaction.filter((item)=> item.id !== idToDel);
+    setTransaction(updated)
+  }
+
   return (
     <div className="flex w-full min-h-screen bg-[#f1f5f9] text-slate-900 overflow-x-hidden">
       {/* SIDEBAR */}
@@ -270,7 +275,7 @@ const FinanceDashboard = () => {
                         {t.type === "income" ? "+" : "-"}$
                         {t.amount.toLocaleString()}
                       </p>
-                      <button className="text-slate-300 hover:text-rose-500 transition text-xl">
+                      <button  className="text-slate-300 hover:text-rose-500 transition text-xl" onClick={() => removeList(t.id)}>
                         🗑️
                       </button>
                     </div>
