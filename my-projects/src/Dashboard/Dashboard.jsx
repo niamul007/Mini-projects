@@ -42,6 +42,7 @@ const FinanceDashboard = () => {
 
   //Transaction state
   const [transaction, setTransaction] = React.useState([]);
+  const [listView , setListView] = React.useState(false);
 
   //date
   const today = new Date().toLocaleDateString("en-US", {
@@ -49,6 +50,10 @@ const FinanceDashboard = () => {
     day: "numeric",
     year: "2-digit",
   });
+
+  //for new arr which will ework with list handling
+  const controlListView = listView? transaction: transaction.slice(0, 3);
+
 
   function addFormData(formData) {
     const title = formData.get("title");
@@ -83,9 +88,9 @@ const FinanceDashboard = () => {
   console.log(totalExpense);
   console.log(transaction);
 
-  function removeList(idToDel){
-    const updated = transaction.filter((item)=> item.id !== idToDel);
-    setTransaction(updated)
+  function removeList(idToDel) {
+    const updated = transaction.filter((item) => item.id !== idToDel);
+    setTransaction(updated);
   }
 
   return (
@@ -235,12 +240,12 @@ const FinanceDashboard = () => {
                   Recent Activity
                 </h3>
                 <span className="text-indigo-600 font-semibold cursor-pointer text-sm">
-                  View All
+                  <button onClick={()=> setListView(!listView)}> {listView ? "Show Less" : "View All"}</button>
                 </span>
               </div>
 
               <div className="space-y-4">
-                {transaction.map((t) => (
+                {controlListView.map((t) => (
                   <div
                     key={t.id}
                     className="flex items-center justify-between p-5 hover:bg-slate-50 rounded-2xl transition border border-transparent hover:border-slate-100 group"
@@ -275,7 +280,10 @@ const FinanceDashboard = () => {
                         {t.type === "income" ? "+" : "-"}$
                         {t.amount.toLocaleString()}
                       </p>
-                      <button  className="text-slate-300 hover:text-rose-500 transition text-xl" onClick={() => removeList(t.id)}>
+                      <button
+                        className="text-slate-300 hover:text-rose-500 transition text-xl"
+                        onClick={() => removeList(t.id)}
+                      >
                         🗑️
                       </button>
                     </div>
