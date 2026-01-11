@@ -2,43 +2,6 @@ import React from "react";
 
 const FinanceDashboard = () => {
   // HARDCODED SAMPLES - No logic, just visuals
-  const sampleTransactions = [
-    {
-      id: 1,
-      name: "Monthly Salary",
-      amount: 4500,
-      type: "Income",
-      date: "01/05/2026",
-    },
-    {
-      id: 2,
-      name: "House Rent",
-      amount: 1200,
-      type: "Expense",
-      date: "01/06/2026",
-    },
-    {
-      id: 3,
-      name: "Freelance Project",
-      amount: 800,
-      type: "Income",
-      date: "01/07/2026",
-    },
-    {
-      id: 4,
-      name: "Grocery Shopping",
-      amount: 150,
-      type: "Expense",
-      date: "01/08/2026",
-    },
-    {
-      id: 5,
-      name: "Netflix Subscription",
-      amount: 15,
-      type: "Expense",
-      date: "01/08/2026",
-    },
-  ];
 
   //Transaction state
   const [transaction, setTransaction] = React.useState([]);
