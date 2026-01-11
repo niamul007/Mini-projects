@@ -1,5 +1,7 @@
 import React from "react";
-
+import Form from "./Form.jsx";
+import List from "./List.jsx";
+import SideBar from "./SideBar.jsx";
 const FinanceDashboard = () => {
   // HARDCODED SAMPLES - No logic, just visuals
 
@@ -45,10 +47,10 @@ const FinanceDashboard = () => {
 
   const totalBalance = totalIncome - totalExpense;
 
-  console.log(totalBalance);
-  console.log(totalIncome);
-  console.log(totalExpense);
-  console.log(transaction);
+  // console.log(totalBalance);
+  // console.log(totalIncome);
+  // console.log(totalExpense);
+  // console.log(transaction);
 
   function removeList(idToDel) {
     const updated = transaction.filter((item) => item.id !== idToDel);
@@ -58,20 +60,8 @@ const FinanceDashboard = () => {
   return (
     <div className="flex w-full min-h-screen bg-[#f1f5f9] text-slate-900 overflow-x-hidden">
       {/* SIDEBAR */}
-      <aside className="w-72 bg-slate-900 text-white flex flex-col hidden lg:flex shadow-2xl">
-        <div className="p-8 italic font-black text-2xl tracking-tighter text-indigo-400 border-b border-slate-800">
-          VAULT<span className="text-white">.PRO</span>
-        </div>
-        <nav className="flex-1 p-6 space-y-4">
-          <div className="flex items-center gap-3 bg-indigo-600/20 text-indigo-400 p-4 rounded-2xl border border-indigo-600/30">
-            <span className="text-xl">🏠</span> Dashboard
-          </div>
-          <div className="flex items-center gap-3 p-4 text-slate-400 hover:bg-slate-800 rounded-2xl transition">
-            <span className="text-xl">📊</span> Analytics
-          </div>
-        </nav>
-      </aside>
-
+      <SideBar />
+      
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 p-6 lg:p-12">
         <header className="mb-10 flex justify-between items-center">
@@ -136,132 +126,15 @@ const FinanceDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* FORM AREA */}
-          <div className="lg:col-span-4 w-full">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
-              <h3 className="text-xl font-bold mb-6 text-slate-800">
-                New Entry
-              </h3>
-
-              {/* Form tag is ready for your logic. 
-        Note: You will need e.preventDefault() in your future function */}
-              <form className="space-y-4 w-full" action={addFormData}>
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">
-                    Transaction Title
-                  </label>
-                  <input
-                    name="title"
-                    required
-                    className="w-full bg-slate-50 border-none p-5 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="e.g. Monthly Salary..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">
-                    Amount ($)
-                  </label>
-                  <input
-                    name="amount"
-                    required
-                    type="number"
-                    step="0.01"
-                    className="w-full bg-slate-50 border-none p-5 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="0.00"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">
-                    Category Type
-                  </label>
-                  <select
-                    name="type"
-                    className="w-full bg-slate-50 border-none p-5 rounded-2xl appearance-none cursor-pointer outline-none text-slate-600"
-                  >
-                    <option value="income">Income (+)</option>
-                    <option value="expense">Expense (-)</option>
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.98]"
-                >
-                  Add to Vault
-                </button>
-              </form>
-            </div>
-          </div>
-
+          <Form addFormData={addFormData} />
           {/* LIST AREA */}
-          <div className="lg:col-span-8">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-bold text-slate-800">
-                  Recent Activity
-                </h3>
-                <span className="text-indigo-600 font-semibold cursor-pointer text-sm">
-                  <button onClick={() => setListView(!listView)}>
-                    {" "}
-                    {listView ? "Show Less" : "View All"}
-                  </button>
-                </span>
-              </div>
-
-              <div className="space-y-4">
-                {controlListView.map((t) => (
-                  <div
-                    key={t.id}
-                    className={`flex items-center justify-between p-5 rounded-3xl transition border group ${
-                      t.type === "income"
-                        ? "bg-emerald-50/40 border-emerald-100/50" // Soft Green Row
-                        : "bg-rose-50/40 border-rose-100/50" // Soft Red Row
-                    }`}
-                  >
-                    <div className="flex items-center gap-5">
-                      <div
-                        className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-sm shadow-sm ${
-                          t.type === "income"
-                            ? "bg-emerald-500 text-white"
-                            : "bg-rose-500 text-white"
-                        }`}
-                      >
-                        {t.type === "income" ? "IN" : "EX"}
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-800 text-lg">
-                          {t.title}
-                        </p>
-                        <p className="text-xs text-slate-400 font-medium">
-                          {t.date}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                      <p
-                        className={`text-xl font-black ${
-                          t.type === "income"
-                            ? "text-emerald-600"
-                            : "text-rose-600"
-                        }`}
-                      >
-                        {t.type === "income" ? "+" : "-"}$
-                        {t.amount.toLocaleString()}
-                      </p>
-                      <button
-                        onClick={() => removeList(t.id)}
-                        className="text-slate-300 hover:text-rose-500 transition text-xl"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <List
+            addFormData={addFormData}
+            removeList={removeList}
+            controlListView={controlListView}
+            listView={listView}
+            setListView={setListView}
+          />
         </div>
       </main>
     </div>
