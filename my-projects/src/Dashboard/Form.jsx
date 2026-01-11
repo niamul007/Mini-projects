@@ -1,6 +1,6 @@
 import react from "react";
 
-export default function Form() {
+export default function Form({ addFormData }) {
   return (
     <>
       <div className="lg:col-span-4 w-full">
@@ -9,6 +9,7 @@ export default function Form() {
 
           {/* Form tag is ready for your logic. 
         Note: You will need e.preventDefault() in your future function */}
+
           <form className="space-y-4 w-full" action={addFormData}>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">
