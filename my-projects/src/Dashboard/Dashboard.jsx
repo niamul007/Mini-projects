@@ -6,7 +6,15 @@ const FinanceDashboard = () => {
   // HARDCODED SAMPLES - No logic, just visuals
 
   //Transaction state
-  const [transaction, setTransaction] = React.useState([]);
+  const [transaction, setTransaction] = React.useState(()=>{
+    const savedTransactions = localStorage.getItem("transactions");
+    return savedTransactions ? JSON.parse(savedTransactions) : [];
+  });
+
+  //to save to local storage  
+  React.useEffect(()=>{
+    localStorage.setItem("transactions", JSON.stringify(transaction));
+  },[transaction]);
   const [listView, setListView] = React.useState(false);
 
   //date
@@ -60,7 +68,7 @@ const FinanceDashboard = () => {
   return (
     <div className="flex w-full min-h-screen bg-[#f1f5f9] text-slate-900 overflow-x-hidden">
       {/* SIDEBAR */}
-      <SideBar />
+      <SideBar setTransaction = {setTransaction}/>
       
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 p-6 lg:p-12">
@@ -85,7 +93,7 @@ const FinanceDashboard = () => {
                 Total Income
               </p>
               <p className="text-4xl font-black text-emerald-600 mt-2">
-                ${totalIncome}
+                ${totalIncome.toFixed(2)}
               </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-10 select-none z-0">
@@ -100,7 +108,7 @@ const FinanceDashboard = () => {
                 Total Expenses
               </p>
               <p className="text-4xl font-black text-rose-600 mt-2">
-                ${totalExpense}
+                ${totalExpense.toFixed(2)}
               </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-10 select-none z-0">
@@ -115,7 +123,7 @@ const FinanceDashboard = () => {
                 Net Balance
               </p>
               <p className="text-4xl font-black text-white mt-2">
-                ${totalBalance}
+                ${totalBalance.toFixed(2)}
               </p>
             </div>
             <span className="absolute -right-2 -bottom-2 text-8xl opacity-20 select-none z-0">
