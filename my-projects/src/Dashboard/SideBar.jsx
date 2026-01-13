@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Form() {
+export default function SideBar({ setTransaction }) {
   return (
     <>
       {/* SIDEBAR */}
@@ -11,9 +11,9 @@ export default function Form() {
         <nav className="flex-1 p-6 space-y-4">
           <div className="flex items-center gap-3 bg-indigo-600/20 text-indigo-400 p-4 rounded-2xl border border-indigo-600/30">
             <span className="text-xl">🏠</span> Dashboard
-          </div>
+          </div>  
           <div className="flex items-center gap-3 p-4 text-slate-400 hover:bg-slate-800 rounded-2xl transition">
-            <span className="text-xl">📊</span> Analytics
+            <button onClick={() => {localStorage.clear(); setTransaction([]); }}>Clear Local Storage 🗑️</button>
           </div>
         </nav>
       </aside>
