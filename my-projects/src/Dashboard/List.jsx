@@ -6,6 +6,13 @@ export default function List({
   listView,
   setListView,
 }) {
+  const [activeTab, setActiveTab] = React.useState("All");
+
+  const filteredItems = controlListView.filter((item) => {
+    if (activeTab === "All") return true; // Show everything
+    return item.type === activeTab; // Only show if type matches "income" or "expense"
+  });
+
   return (
     <>
       <div className="lg:col-span-8">
@@ -26,15 +33,21 @@ export default function List({
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-slate-50">
             {/* Filter Tabs */}
             <div className="flex bg-slate-100 p-1.5 rounded-2xl">
-              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-white text-indigo-600 shadow-sm">
-                All
-              </button>
-              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition">
-                Income
-              </button>
-              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition">
-                Expense
-              </button>
+              {["All", "Income", "Expense"].map((tab) => {
+                return (
+                 <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)} // Changes the view
+                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                    activeTab === tab
+                      ? "bg-white text-indigo-600 shadow-sm" // The "Active" look
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  {tab}
+                </button>
+                );
+              })}
             </div>
 
             {/* Sort Dropdown */}
