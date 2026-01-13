@@ -7,18 +7,33 @@ export default function List({
   setListView,
 }) {
   const [activeTab, setActiveTab] = React.useState("All");
+  const [sortType, setSortType] = React.useState("newest");
 
   const filteredItems = controlListView.filter((item) => {
     if (activeTab === "All") return true; // Show everything
     return item.type.toLowerCase() === activeTab.toLowerCase(); // Only show if type matches "income" or "expense"
   });
 
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortType === "newest") {
+      return b.id - a.id; // Newest first
+    } else if (sortType === "highest") {
+      return b.amount - a.amount; // Highest amount first
+    }
+    else if (sortType === "lowest") {
+      return a.amount - b.amount; // Lowest amount first
+    }
+  });
+
+  const setList = listView ? sortedItems : sortedItems.slice(0, 3);
+
+
   return (
     <>
       <div className="lg:col-span-8">
         <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
           {/* HEADER SECTION */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-8">  
             <h3 className="text-xl font-bold text-slate-800">
               Recent Activity
             </h3>
@@ -35,17 +50,17 @@ export default function List({
             <div className="flex bg-slate-100 p-1.5 rounded-2xl">
               {["All", "Income", "Expense"].map((tab) => {
                 return (
-                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)} // Changes the view
-                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
-                    activeTab === tab
-                      ? "bg-white text-indigo-600 shadow-sm" // The "Active" look
-                      : "text-slate-400 hover:text-slate-600"
-                  }`}
-                >
-                  {tab}
-                </button>
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)} // Changes the view
+                    className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                      activeTab === tab
+                        ? "bg-white text-indigo-600 shadow-sm" // The "Active" look
+                        : "text-slate-400 hover:text-slate-600"
+                    }`}
+                  >
+                    {tab}
+                  </button>
                 );
               })}
             </div>
@@ -55,7 +70,11 @@ export default function List({
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 Sort:
               </span>
-              <select className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer">
+              <select
+                className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer"
+                value={sortType}
+                onChange={(e) => setSortType(e.target.value)}
+              >
                 <option value="newest">Newest</option>
                 <option value="highest">Highest Amount</option>
                 <option value="lowest">Lowest Amount</option>
@@ -65,7 +84,7 @@ export default function List({
 
           {/* LIST AREA */}
           <div className="space-y-4">
-            {filteredItems.map((t) => (
+            {setList.map((t) => (
               <div
                 key={t.id}
                 className={`flex items-center justify-between p-5 rounded-3xl transition border group hover:shadow-md hover:border-indigo-100 ${
