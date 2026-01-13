@@ -1,30 +1,64 @@
 import React from "react";
 
-export default function List({ removeList, controlListView, listView, setListView }) {
+export default function List({
+  removeList,
+  controlListView,
+  listView,
+  setListView,
+}) {
   return (
     <>
       <div className="lg:col-span-8">
         <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
+          {/* HEADER SECTION */}
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-bold text-slate-800">
               Recent Activity
             </h3>
             <span className="text-indigo-600 font-semibold cursor-pointer text-sm">
               <button onClick={() => setListView(!listView)}>
-                {" "}
                 {listView ? "Show Less" : "View All"}
               </button>
             </span>
           </div>
 
+          {/* NEW: FILTER & SORT BAR */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-slate-50">
+            {/* Filter Tabs */}
+            <div className="flex bg-slate-100 p-1.5 rounded-2xl">
+              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-white text-indigo-600 shadow-sm">
+                All
+              </button>
+              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition">
+                Income
+              </button>
+              <button className="px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition">
+                Expense
+              </button>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Sort:
+              </span>
+              <select className="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer">
+                <option value="newest">Newest</option>
+                <option value="highest">Highest Amount</option>
+                <option value="lowest">Lowest Amount</option>
+              </select>
+            </div>
+          </div>
+
+          {/* LIST AREA */}
           <div className="space-y-4">
             {controlListView.map((t) => (
               <div
                 key={t.id}
-                className={`flex items-center justify-between p-5 rounded-3xl transition border group ${
+                className={`flex items-center justify-between p-5 rounded-3xl transition border group hover:shadow-md hover:border-indigo-100 ${
                   t.type === "income"
-                    ? "bg-emerald-50/40 border-emerald-100/50" // Soft Green Row
-                    : "bg-rose-50/40 border-rose-100/50" // Soft Red Row
+                    ? "bg-emerald-50/40 border-emerald-100/50"
+                    : "bg-rose-50/40 border-rose-100/50"
                 }`}
               >
                 <div className="flex items-center gap-5">
@@ -58,7 +92,7 @@ export default function List({ removeList, controlListView, listView, setListVie
                   </p>
                   <button
                     onClick={() => removeList(t.id)}
-                    className="text-slate-300 hover:text-rose-500 transition text-xl"
+                    className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-300 hover:text-rose-500 hover:border-rose-100 transition shadow-sm"
                   >
                     🗑️
                   </button>
