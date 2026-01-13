@@ -10,7 +10,7 @@ export default function List({
 
   const filteredItems = controlListView.filter((item) => {
     if (activeTab === "All") return true; // Show everything
-    return item.type === activeTab; // Only show if type matches "income" or "expense"
+    return item.type.toLowerCase() === activeTab.toLowerCase(); // Only show if type matches "income" or "expense"
   });
 
   return (
@@ -65,7 +65,7 @@ export default function List({
 
           {/* LIST AREA */}
           <div className="space-y-4">
-            {controlListView.map((t) => (
+            {filteredItems.map((t) => (
               <div
                 key={t.id}
                 className={`flex items-center justify-between p-5 rounded-3xl transition border group hover:shadow-md hover:border-indigo-100 ${
