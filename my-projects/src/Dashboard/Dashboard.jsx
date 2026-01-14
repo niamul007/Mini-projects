@@ -6,15 +6,16 @@ const FinanceDashboard = () => {
   // HARDCODED SAMPLES - No logic, just visuals
 
   //Transaction state
-  const [transaction, setTransaction] = React.useState(()=>{
+  const [transaction, setTransaction] = React.useState(() => {
     const savedTransactions = localStorage.getItem("transactions");
     return savedTransactions ? JSON.parse(savedTransactions) : [];
   });
 
-  //to save to local storage  
-  React.useEffect(()=>{
+
+  //to save to local storage
+  React.useEffect(() => {
     localStorage.setItem("transactions", JSON.stringify(transaction));
-  },[transaction]);
+  }, [transaction]);
   const [listView, setListView] = React.useState(false);
 
   //date
@@ -68,8 +69,8 @@ const FinanceDashboard = () => {
   return (
     <div className="flex w-full min-h-screen bg-[#f1f5f9] text-slate-900 overflow-x-hidden">
       {/* SIDEBAR */}
-      <SideBar setTransaction = {setTransaction}/>
-      
+      <SideBar setTransaction={setTransaction} />
+
       {/* MAIN CONTENT AREA */}
       <main className="flex-1 p-6 lg:p-12">
         <header className="mb-10 flex justify-between items-center">
@@ -142,6 +143,7 @@ const FinanceDashboard = () => {
             controlListView={controlListView}
             listView={listView}
             setListView={setListView}
+            setTransaction={setTransaction}
           />
         </div>
       </main>
