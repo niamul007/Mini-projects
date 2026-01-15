@@ -17,14 +17,22 @@ export default function PracticeLab() {
   // TODO: Create state for the tempTitle (To hold the input text)
 
   const [projectList, setProjectList] = React.useState(initialProjects);
+
+
+  const [activeTab, setActive] = React.useState("All");
   const totalBalance = projectList.reduce(
     (acc, curr) => acc + (curr.budget || 0),
     0
   );
   console.log(totalBalance);
 
+
   // --- STEP 3: LOGIC WORKBENCH ---
   // TODO: Create a variable for filteredItems (filter based on category state)
+  const filteredItems = projectList.filter(item=> {
+    if(activeTab === "All") return true;
+    return item.category.toLocaleLowerCase() === activeTab.toLocaleLowerCase()
+  } )
   // TODO: Create a variable for sortedItems (sort based on budget or title)
 
   // --- STEP 4: FUNCTIONS ---
@@ -45,8 +53,12 @@ export default function PracticeLab() {
             {["All", "Science", "Home", "Art"].map((cat) => (
               <button
                 key={cat}
-                className="px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all"
-                // TODO: Add onClick to set the active category state
+                className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  activeTab === cat
+                    ? "bg-white text-indigo-600 shadow-sm" // The "Active" look
+                    : "text-slate-400 hover:text-slate-600"
+                }`} // TODO: Add onClick to set the active category state
+                onClick={() => setActive(cat)}
                 // TODO: Add dynamic class for the "Active" tab look
               >
                 {cat}
@@ -68,7 +80,7 @@ export default function PracticeLab() {
         {/* --- THE LIST SECTION --- */}
         <div className="space-y-4">
           {/* TODO: Map over your sortedItems variable here */}
-          {initialProjects.map((item) => (
+          {filteredItems.map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between p-6 bg-slate-50 rounded-3xl border border-slate-100 group"
@@ -115,8 +127,12 @@ export default function PracticeLab() {
 
         {/* --- STATS FOOTER --- */}
         <div className="mt-10 pt-6 border-t flex justify-between items-center text-slate-400">
-          <p className="text-xs font-bold uppercase">Total Items: 0</p>
-          <p className="text-xs font-bold uppercase">Total Budget: ${totalBalance}</p>
+          <p className="text-xs font-bold uppercase">
+            Total Items: {projectList.length}
+          </p>
+          <p className="text-xs font-bold uppercase">
+            Total Budget: ${totalBalance}
+          </p>
         </div>
       </div>
     </div>
