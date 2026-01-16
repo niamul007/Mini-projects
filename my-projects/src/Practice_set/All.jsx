@@ -45,6 +45,10 @@ export default function PracticeLab() {
 
   // --- STEP 4: FUNCTIONS ---
   // TODO: Create a function to handle deleting an item
+  const handleDelete = (id) => {
+    const updatedList = projectList.filter(item => item.id !== id);
+    setProjectList (updatedList);
+  }
   // TODO: Create a function to handle saving the edited title
 
   return (
@@ -123,6 +127,7 @@ export default function PracticeLab() {
 
                   {/* DELETE BUTTON */}
                   <button
+                  onClick={() => handleDelete(item.id)}
                     className="p-2 bg-white border rounded-xl hover:text-rose-600 transition-colors"
                     // TODO: Add onClick to delete the item
                   >
