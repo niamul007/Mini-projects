@@ -17,6 +17,7 @@ export default function PracticeLab() {
   // TODO: Create state for the tempTitle (To hold the input text)
 
   const [projectList, setProjectList] = React.useState(initialProjects);
+  const [sortType , setSortType] = React.useState("low-to-high");
 
 
   const [activeTab, setActive] = React.useState("All");
@@ -33,6 +34,13 @@ export default function PracticeLab() {
     if(activeTab === "All") return true;
     return item.category.toLocaleLowerCase() === activeTab.toLocaleLowerCase()
   } )
+  
+  const sortedItems = [...filteredItems].sort((a,b)=>{
+     if(sortType === 'low-to-high') return a.budget - b.budget;
+     if(sortType === 'high-to-low') return b.budget - a.budget;
+     if(sortType === 'alphabetical') return a.title.localeCompare(b.title);
+  })
+
   // TODO: Create a variable for sortedItems (sort based on budget or title)
 
   // --- STEP 4: FUNCTIONS ---
@@ -70,6 +78,7 @@ export default function PracticeLab() {
           <select
             className="p-2 bg-slate-50 border rounded-xl text-sm font-bold outline-none"
             // TODO: Add value and onChange to control sorting state
+            onChange={(e)=>  setSortType(e.target.value)}
           >
             <option value="low-to-high">Budget: Low to High</option>
             <option value="high-to-low">Budget: High to Low</option>
@@ -80,7 +89,7 @@ export default function PracticeLab() {
         {/* --- THE LIST SECTION --- */}
         <div className="space-y-4">
           {/* TODO: Map over your sortedItems variable here */}
-          {filteredItems.map((item) => (
+          {sortedItems.map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between p-6 bg-slate-50 rounded-3xl border border-slate-100 group"
