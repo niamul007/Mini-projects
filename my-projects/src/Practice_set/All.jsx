@@ -17,8 +17,9 @@ export default function PracticeLab() {
   // TODO: Create state for the tempTitle (To hold the input text)
 
   const [projectList, setProjectList] = React.useState(initialProjects);
-  const [sortType , setSortType] = React.useState("low-to-high");
-
+  const [sortType, setSortType] = React.useState("low-to-high");
+  const [editingId, setEditingId] = React.useState(null);
+  const [tempTitle, setTempTitle] = React.useState("");
 
   const [activeTab, setActive] = React.useState("All");
   const totalBalance = projectList.reduce(
@@ -27,28 +28,37 @@ export default function PracticeLab() {
   );
   console.log(totalBalance);
 
-
   // --- STEP 3: LOGIC WORKBENCH ---
   // TODO: Create a variable for filteredItems (filter based on category state)
-  const filteredItems = projectList.filter(item=> {
-    if(activeTab === "All") return true;
-    return item.category.toLocaleLowerCase() === activeTab.toLocaleLowerCase()
-  } )
-  
-  const sortedItems = [...filteredItems].sort((a,b)=>{
-     if(sortType === 'low-to-high') return a.budget - b.budget;
-     if(sortType === 'high-to-low') return b.budget - a.budget;
-     if(sortType === 'alphabetical') return a.title.localeCompare(b.title);
-  })
+  const filteredItems = projectList.filter((item) => {
+    if (activeTab === "All") return true;
+    return item.category.toLocaleLowerCase() === activeTab.toLocaleLowerCase();
+  });
+
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    if (sortType === "low-to-high") return a.budget - b.budget;
+    if (sortType === "high-to-low") return b.budget - a.budget;
+    if (sortType === "alphabetical") return a.title.localeCompare(b.title);
+  });
+
+  const savedTitle = (id, newTitle) => {
+    const updatedList = projectList.map((item) =>
+      item.id === id ? { ...item, title: newTitle } : item
+    );
+
+    setProjectList(updatedList);
+    setEditingId(null);
+    setTempTitle("");
+  };
 
   // TODO: Create a variable for sortedItems (sort based on budget or title)
 
   // --- STEP 4: FUNCTIONS ---
   // TODO: Create a function to handle deleting an item
   const handleDelete = (id) => {
-    const updatedList = projectList.filter(item => item.id !== id);
-    setProjectList (updatedList);
-  }
+    const updatedList = projectList.filter((item) => item.id !== id);
+    setProjectList(updatedList);
+  };
   // TODO: Create a function to handle saving the edited title
 
   return (
@@ -82,7 +92,7 @@ export default function PracticeLab() {
           <select
             className="p-2 bg-slate-50 border rounded-xl text-sm font-bold outline-none"
             // TODO: Add value and onChange to control sorting state
-            onChange={(e)=>  setSortType(e.target.value)}
+            onChange={(e) => setSortType(e.target.value)}
           >
             <option value="low-to-high">Budget: Low to High</option>
             <option value="high-to-low">Budget: High to Low</option>
@@ -102,8 +112,40 @@ export default function PracticeLab() {
                 {/* --- TITLE AREA (Condition Logic Needed) --- */}
                 {/* TODO: If editingId matches this item.id, show <input /> */}
                 {/* TODO: Else, show the <h3> with the item.title */}
+                {/* 1. This is your logic block (This is good!) */}
+                {editingId === item.id ? (
+                  <div className="flex gap-2 items-center">
+                    <input
+                      autoFocus
+                      type="text"
+                      className="flex-1 p-2 border-2 border-indigo-500 rounded-lg outline-none bg-white font-bold"
+                      value={tempTitle}
+                      onChange={(e) => setTempTitle(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && savedTitle(item.id, tempTitle)
+                      }
+                    />
+                    <button
+                      onClick={() => savedTitle(item.id, tempTitle)}
+                      className="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="px-3 py-2 bg-slate-200 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-300"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  /* THIS IS THE ONLY H3 NOW */
+                  <h3 className="text-lg font-extrabold text-slate-800">
+                    {item.title}
+                  </h3>
+                )}
 
-                <h3 className="text-lg font-extrabold">{item.title}</h3>
+                {/* 2. DELETE THIS LINE BELOW! It is showing up regardless of the logic above */}
 
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   {item.category} • ID: #{item.id}
@@ -119,6 +161,10 @@ export default function PracticeLab() {
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   {/* EDIT BUTTON */}
                   <button
+                    onClick={() => {
+                      setEditingId(item.id);
+                      setTempTitle(item.title);
+                    }}
                     className="p-2 bg-white border rounded-xl hover:text-indigo-600 transition-colors"
                     // TODO: Add onClick to trigger edit mode (set editingId and tempTitle)
                   >
@@ -127,7 +173,7 @@ export default function PracticeLab() {
 
                   {/* DELETE BUTTON */}
                   <button
-                  onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item.id)}
                     className="p-2 bg-white border rounded-xl hover:text-rose-600 transition-colors"
                     // TODO: Add onClick to delete the item
                   >
