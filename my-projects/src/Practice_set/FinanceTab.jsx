@@ -2,6 +2,15 @@ import React from "react";
 
 export default function FinancePro() {
   // --- [ YOUR LOGIC / STATES GO HERE ] ---
+  const [transactions, setTransactions] = React.useState([]);
+
+  function addTransaction(formData){
+    const description = formData.get('description')
+    const amount = formData.get('amount')
+    const type = formData.get("type")
+    console.log(description,amount,type)
+  }
+
 
   return (
     <div className="min-h-screen bg-[#0b0f1a] text-slate-200 p-6 md:p-12 font-sans selection:bg-indigo-500/30">
@@ -64,7 +73,7 @@ export default function FinancePro() {
           
           {/* INPUT FORM (4 Columns) */}
           <div className="lg:col-span-4">
-            <form className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] sticky top-10 shadow-xl">
+            <form className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] sticky top-10 shadow-xl" action={addTransaction}>
               <h3 className="text-lg font-black text-white mb-8 flex items-center gap-3">
                 <span className="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
                 Add Transaction
@@ -77,23 +86,26 @@ export default function FinancePro() {
                     type="text" 
                     className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white transition-all"
                     placeholder="Rent, Groceries..."
+                    name="description"
                     /* YOUR BINDING */
                   />
                 </div>
 
                 <div className="space-y-2">
+
                   <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Amount</label>
                   <input 
                     type="number" 
                     className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white font-mono"
                     placeholder="0.00"
+                    name="amount"
                     /* YOUR BINDING */
                   />
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Category Type</label>
-                  <select 
+                  <select name="type"
                     className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white cursor-pointer appearance-none"
                     /* YOUR BINDING */
                   >
