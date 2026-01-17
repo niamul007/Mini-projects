@@ -11,12 +11,17 @@ import EmojiGame from './emoji-game/EmojiGame.jsx'
 import BudgetList from './list/List.jsx'
 import KanbanBoard from './Unknown/Known.jsx'
 import FinanceDashboard from './Dashboard/Dashboard.jsx'
+import PracticeLab from './Practice_set/All.jsx'
+import FinancePro from './Practice_set/FinanceTab.jsx'
 
 function App() {
 
   return (
     <>
-    <FinanceDashboard/>
+    {/* <PracticeLab /> */}
+    {/* <FinanceDashboard /> */}
+    {/* <KanbanBoard /> */}
+    <FinancePro />
     </>
   )
 }

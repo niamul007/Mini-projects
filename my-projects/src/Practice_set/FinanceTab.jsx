@@ -1,79 +1,148 @@
 import React from "react";
 
 export default function FinancePro() {
-  // --- LOGIC ZONE ---
-  // TODO 1: Create state for 'transactions' (Array of {id, text, amount, type})
-  // TODO 2: Create state for 'savingsGoal' (Number)
-  // TODO 3: Create state for 'editingId' (For your update logic)
-
-
-  // --- DERIVED LOGIC ---
-  // TODO 4: Calculate 'totalBalance' using .reduce()
-  // TODO 5: Calculate 'progressPercentage' (Balance / Goal * 100)
+  // --- [ YOUR LOGIC / STATES GO HERE ] ---
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-slate-200 p-4 md:p-10 font-sans">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#0b0f1a] text-slate-200 p-6 md:p-12 font-sans selection:bg-indigo-500/30">
+      <div className="max-w-6xl mx-auto">
         
-        {/* HEADER & GOAL SECTION */}
-        <header className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-2 bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-[2rem] shadow-xl">
-            <p className="text-indigo-100 text-sm font-bold uppercase tracking-widest opacity-80">Current Balance</p>
-            <h1 className="text-5xl font-black text-white mt-2">$0.00</h1> {/* TODO: Total Balance */}
-            
-            <div className="mt-8">
-              <div className="flex justify-between text-xs font-bold mb-2">
-                <span>GOAL PROGRESS</span>
-                <span>0%</span> {/* TODO: Progress % */}
+        {/* TOP DASHBOARD CARDS */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+          
+          {/* Main Balance Display */}
+          <div className="lg:col-span-2 bg-indigo-600 p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-900/20 relative overflow-hidden group">
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+            <p className="text-indigo-100 text-xs font-black uppercase tracking-[0.2em]">Available Balance</p>
+            <h2 className="text-5xl font-black text-white mt-3 tracking-tight">
+              {/* YOUR BALANCE VARIABLE */} $0.00
+            </h2>
+            <div className="mt-10 space-y-3">
+              <div className="flex justify-between text-[10px] font-black text-indigo-100 uppercase tracking-widest">
+                <span>Goal Progress</span>
+                <span>{/* YOUR PROGRESS % */} 0%</span>
               </div>
-              <div className="w-full bg-indigo-900/40 h-3 rounded-full overflow-hidden">
-                <div className="bg-emerald-400 h-full transition-all duration-500" style={{ width: '0%' }}></div>
+              <div className="w-full bg-black/20 h-2.5 rounded-full overflow-hidden border border-white/5">
+                <div 
+                  className="bg-white h-full transition-all duration-1000 ease-in-out" 
+                  style={{ width: `0%` /* YOUR DYNAMIC WIDTH */ }}
+                ></div>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-800 p-8 rounded-[2rem] border border-slate-700 flex flex-col justify-center">
-            <p className="text-slate-400 text-xs font-bold uppercase mb-4">Set Savings Goal</p>
-            <input 
-              type="number" 
-              className="bg-transparent text-3xl font-black outline-none border-b-2 border-slate-600 focus:border-indigo-500 pb-2"
-              placeholder="0.00"
-              // TODO: Wire to savingsGoal state
-            />
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* INPUT FORM */}
-          <section className="bg-slate-800/50 p-8 rounded-[2rem] border border-slate-700 h-fit">
-            <h3 className="text-xl font-bold mb-6">Add Transaction</h3>
-            <div className="space-y-4">
-              <input className="w-full bg-slate-900 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500" placeholder="Description (e.g. Salary)" />
-              <input type="number" className="w-full bg-slate-900 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500" placeholder="Amount" />
-              <div className="flex gap-2">
-                <button className="flex-1 py-4 bg-emerald-500/10 text-emerald-500 rounded-2xl font-bold hover:bg-emerald-500 hover:text-white transition-all">Income</button>
-                <button className="flex-1 py-4 bg-rose-500/10 text-rose-500 rounded-2xl font-bold hover:bg-rose-500 hover:text-white transition-all">Expense</button>
+          {/* Goal Settings Card */}
+          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] flex flex-col justify-between">
+            <div>
+              <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-1">Target Goal</p>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-black text-slate-400">$</span>
+                <input 
+                  type="number"
+                  className="bg-transparent text-3xl font-black text-white outline-none w-full border-b border-transparent focus:border-slate-700 transition-all"
+                  placeholder="0"
+                  /* YOUR VALUE & ONCHANGE */
+                />
               </div>
             </div>
-          </section>
+            <p className="text-[11px] text-slate-600 font-medium italic mt-4 leading-relaxed">
+              "A budget tells your money where to go instead of wondering where it went."
+            </p>
+          </div>
 
-          {/* TRANSACTION LIST */}
-          <section className="lg:col-span-2 space-y-4">
-             {/* TODO: Map transactions here */}
-             <div className="group bg-slate-800 p-6 rounded-[2rem] border border-slate-700 flex justify-between items-center transition-all hover:border-slate-500">
-               <div className="flex gap-4 items-center">
-                 <div className="w-12 h-12 bg-slate-700 rounded-2xl flex items-center justify-center text-xl">💰</div>
-                 <div>
-                   <h4 className="font-bold text-lg text-white">Sample Item</h4>
-                   <p className="text-xs text-slate-500 font-bold uppercase">Income</p>
-                 </div>
-               </div>
-               <div className="flex items-center gap-6">
-                 <span className="text-xl font-black text-emerald-400">+$0.00</span>
-                 <button className="opacity-0 group-hover:opacity-100 p-2 text-slate-500 hover:text-rose-500 transition-all">🗑️</button>
-               </div>
+          {/* Quick Info Card */}
+          <div className="bg-slate-900/50 border border-dashed border-slate-800 p-8 rounded-[2.5rem] flex items-center justify-center">
+             <div className="text-center">
+                <p className="text-indigo-400 text-2xl font-black">{/* COUNT */ } 0</p>
+                <p className="text-slate-500 text-[10px] font-black uppercase mt-1">Total Entries</p>
              </div>
-          </section>
+          </div>
+        </div>
+
+        {/* MAIN INTERACTION AREA */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* INPUT FORM (4 Columns) */}
+          <div className="lg:col-span-4">
+            <form className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] sticky top-10 shadow-xl">
+              <h3 className="text-lg font-black text-white mb-8 flex items-center gap-3">
+                <span className="w-1.5 h-6 bg-indigo-500 rounded-full"></span>
+                Add Transaction
+              </h3>
+              
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Label</label>
+                  <input 
+                    type="text" 
+                    className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white transition-all"
+                    placeholder="Rent, Groceries..."
+                    /* YOUR BINDING */
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Amount</label>
+                  <input 
+                    type="number" 
+                    className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white font-mono"
+                    placeholder="0.00"
+                    /* YOUR BINDING */
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase ml-1">Category Type</label>
+                  <select 
+                    className="w-full bg-slate-800/50 border border-slate-700 p-4 rounded-2xl outline-none focus:ring-2 ring-indigo-500 text-white cursor-pointer appearance-none"
+                    /* YOUR BINDING */
+                  >
+                    <option value="income">Income (+)</option>
+                    <option value="expense">Expense (-)</option>
+                  </select>
+                </div>
+
+                <button 
+                  className="w-full py-4 bg-white text-black rounded-2xl font-black uppercase text-xs tracking-[0.2em] hover:bg-indigo-500 hover:text-white transition-all active:scale-95 mt-4"
+                  /* YOUR SUBMIT HANDLER */
+                >
+                  Confirm Entry
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* LIST AREA (8 Columns) */}
+          <div className="lg:col-span-8 space-y-4">
+            <div className="flex justify-between items-center mb-6 px-4">
+               <h3 className="font-bold text-slate-400">History</h3>
+               <button className="text-[10px] font-black text-indigo-500 uppercase hover:text-indigo-400">Clear All</button>
+            </div>
+
+            {/* YOUR .map() STARTS HERE */}
+            <div className="group bg-slate-900/40 border border-slate-800 p-6 rounded-3xl flex items-center justify-between hover:bg-slate-900 transition-all">
+              <div className="flex items-center gap-5">
+                <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-xl grayscale group-hover:grayscale-0 transition-all">
+                  💰 {/* OR 💸 BASED ON TYPE */}
+                </div>
+                <div>
+                  <h4 className="font-bold text-white capitalize">Template Item</h4>
+                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">Transaction ID: #0000</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-8">
+                <span className="text-xl font-black text-emerald-400"> {/* OR ROSE-400 */}
+                   +$0.00
+                </span>
+                <button className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            {/* YOUR .map() ENDS HERE */}
+
+          </div>
         </div>
       </div>
     </div>
