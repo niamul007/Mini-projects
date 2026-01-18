@@ -1,9 +1,12 @@
-import React, { useOptimistic } from "react";
+import React, { useEffect, useOptimistic } from "react";
 
 export default function FinancePro() {
   // --- [ YOUR LOGIC / STATES GO HERE ] ---
-  const [transactions, setTransactions] = React.useState([]);
-  const [goal , setGoal] = React.useState(6000);
+  const [transactions, setTransactions] = React.useState(() => {
+    const saved = localStorage.getItem("transactions");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [goal, setGoal] = React.useState(6000);
 
   function addTransaction(formData) {
     const description = formData.get("description");
@@ -20,12 +23,14 @@ export default function FinancePro() {
     setTransactions([...transactions, newItem]);
   }
 
-  const delTransaction = (toDelId)=>{
-    const Updateitem = transactions.filter(item=> item.id !== toDelId)
-    setTransactions(Updateitem)
-  }
+  useEffect(() => {
+    localStorage.setItem("transactions" ,JSON.stringify(transactions))
+  },[transactions]);
 
-
+  const delTransaction = (toDelId) => {
+    const Updateitem = transactions.filter((item) => item.id !== toDelId);
+    setTransactions(Updateitem);
+  };
 
   const totalIncome = transactions
     .filter((item) => item.type === "income")
@@ -55,12 +60,24 @@ export default function FinancePro() {
             <div className="mt-10 space-y-3">
               <div className="flex justify-between text-[10px] font-black text-indigo-100 uppercase tracking-widest">
                 <span>Goal Progress</span>
-                <span>{/* YOUR PROGRESS % */} {totalBalance > 0 ? Math.min(100, (totalBalance / goal) * 100) : 0}%</span>
+                <span>
+                  {/* YOUR PROGRESS % */}{" "}
+                  {totalBalance > 0
+                    ? Math.min(100, (totalBalance / goal) * 100)
+                    : 0}
+                  %
+                </span>
               </div>
               <div className="w-full bg-black/20 h-2.5 rounded-full overflow-hidden border border-white/5">
                 <div
                   className="bg-white h-full transition-all duration-1000 ease-in-out"
-                  style={{ width: `${totalBalance > 0 ? Math.min(100, (totalBalance / goal) * 100) : 0}%` /* YOUR DYNAMIC WIDTH */ }}
+                  style={{
+                    width: `${
+                      totalBalance > 0
+                        ? Math.min(100, (totalBalance / goal) * 100)
+                        : 0
+                    }%` /* YOUR DYNAMIC WIDTH */,
+                  }}
                 ></div>
               </div>
             </div>
@@ -171,7 +188,7 @@ export default function FinancePro() {
           <div className="lg:col-span-8 space-y-4">
             <div className="flex justify-between items-center mb-6 px-4">
               <h3 className="font-bold text-slate-400">History</h3>
-              <button className="text-[10px] font-black text-indigo-500 uppercase hover:text-indigo-400">
+              <button onClick={()=> { localStorage.clear(); setTransactions([]); }} className="text-[10px] font-black text-indigo-500 uppercase hover:text-indigo-400">
                 Clear All
               </button>
             </div>
@@ -206,7 +223,10 @@ export default function FinancePro() {
                     >
                       {item.type === "expense" ? "-" : "+"}${item.amount}
                     </span>
-                    <button onClick={()=> delTransaction(item.id)} className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
+                    <button
+                      onClick={() => delTransaction(item.id)}
+                      className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100"
+                    >
                       🗑️
                     </button>
                   </div>
