@@ -5,20 +5,34 @@ import data from "./data.js";
 const PORT = 3000;
 const HOST = "localhost";
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   // 1. Change Content-Type to application/json so browsers/apps know what it is
-  res.writeHead(200, { "Content-Type": "application/json" });
-
   try {
-    const locations = getAllLocations();
+    const locations = await getAllLocations();
     // 2. Wrap everything in one JSON response
-    const responseData = JSON.stringify({
-      message: "Hello! Data fetched successfully.",
-      count: locations.length,
-      data: locations,
-    }, null, 2);
+    if (req.url === "/api" && req.method === "GET") {
+      const responseData = JSON.stringify(
+        {
+          message: "Hello! Data fetched successfully.",
+          count: locations.length,
+          data: locations,
+        },
+        null,
+        2
+      );
+      res.writeHead(200, { "Content-Type": "application/json" });
 
-    res.end(responseData); 
+      res.end(responseData);
+    }
+
+    if (req.url === "/") {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      return res.end("Welcome to the Home Page!");
+    }
+
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Route not found" }));
+    
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Server Error: Failed to fetch locations.");
@@ -26,7 +40,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`🚀 Server running at http://${HOST}:${PORT}/`);
+  console.log(`🚀 Server running at http://${HOST}:${PORT}/api`);
 });
 
 // Get the current directory of this script
