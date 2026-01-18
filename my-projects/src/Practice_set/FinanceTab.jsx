@@ -16,11 +16,12 @@ export default function FinancePro() {
       type: type,
     };
 
-    setTransactions([...transactions , newItem]);
+    setTransactions([...transactions, newItem]);
   }
 
-  const totalBalance = transactions.filter(item=> item.amount)
-  .reduce((acc,curr)=> acc + curr.amount ,0)
+  const totalBalance = transactions
+    .filter((item) => item.amount)
+    .reduce((acc, curr) => acc + curr.amount, 0);
   console.log(transactions);
   console.log(totalBalance);
 
@@ -78,7 +79,7 @@ export default function FinancePro() {
           <div className="bg-slate-900/50 border border-dashed border-slate-800 p-8 rounded-[2.5rem] flex items-center justify-center">
             <div className="text-center">
               <p className="text-indigo-400 text-2xl font-black">
-                {transactions.length} 
+                {transactions.length}
               </p>
               <p className="text-slate-500 text-[10px] font-black uppercase mt-1">
                 Total Entries
@@ -160,33 +161,38 @@ export default function FinancePro() {
               </button>
             </div>
 
-            {/* YOUR .map() STARTS HERE */}
-            <div className="group bg-slate-900/40 border border-slate-800 p-6 rounded-3xl flex items-center justify-between hover:bg-slate-900 transition-all">
-              <div className="flex items-center gap-5">
-                <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-xl grayscale group-hover:grayscale-0 transition-all">
-                  💰 {/* OR 💸 BASED ON TYPE */}
-                </div>
-                <div>
-                  <h4 className="font-bold text-white capitalize">
-                    Template Item
-                  </h4>
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">
-                    Transaction ID: #0000
-                  </p>
-                </div>
-              </div>
+            {transactions.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="group bg-slate-900/40 border border-slate-800 p-6 rounded-3xl flex items-center justify-between hover:bg-slate-900 transition-all"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-xl grayscale group-hover:grayscale-0 transition-all">
+                      {item.type === "expense" ? "💸" : "💰"}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white capitalize">
+                        {item.description}
+                      </h4>
+                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">
+                        {item.id}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="flex items-center gap-8">
-                <span className="text-xl font-black text-emerald-400">
-                  {" "}
-                  {/* OR ROSE-400 */}
-                  +$0.00
-                </span>
-                <button className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
-                  🗑️
-                </button>
-              </div>
-            </div>
+                  <div className="flex items-center gap-8">
+                    <span className={`text-xl font-black ${item.type === "expense" ? "text-rose-400" : "text-emerald-400"}`}>
+                      {item.type === "expense" ? "-" : "+"}${item.amount}
+                    </span>
+                    <button className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+
             {/* YOUR .map() ENDS HERE */}
           </div>
         </div>
