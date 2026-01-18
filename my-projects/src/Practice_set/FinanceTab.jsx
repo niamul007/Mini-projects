@@ -3,6 +3,7 @@ import React from "react";
 export default function FinancePro() {
   // --- [ YOUR LOGIC / STATES GO HERE ] ---
   const [transactions, setTransactions] = React.useState([]);
+  const [goal , setGoal] = React.useState(6000);
 
   function addTransaction(formData) {
     const description = formData.get("description");
@@ -18,10 +19,14 @@ export default function FinancePro() {
 
     setTransactions([...transactions, newItem]);
   }
-
-  const totalBalance = transactions
-    .filter((item) => item.amount)
+  const totalIncome = transactions
+    .filter((item) => item.type === "income")
     .reduce((acc, curr) => acc + curr.amount, 0);
+  const totalExpense = transactions
+    .filter((item) => item.type === "expense")
+    .reduce((acc, curr) => acc + curr.amount, 0);
+    
+  const totalBalance = totalIncome - totalExpense;
   console.log(transactions);
   console.log(totalBalance);
 
@@ -42,12 +47,12 @@ export default function FinancePro() {
             <div className="mt-10 space-y-3">
               <div className="flex justify-between text-[10px] font-black text-indigo-100 uppercase tracking-widest">
                 <span>Goal Progress</span>
-                <span>{/* YOUR PROGRESS % */} 0%</span>
+                <span>{/* YOUR PROGRESS % */} {totalBalance > 0 ? Math.min(100, (totalBalance / goal) * 100) : 0}%</span>
               </div>
               <div className="w-full bg-black/20 h-2.5 rounded-full overflow-hidden border border-white/5">
                 <div
                   className="bg-white h-full transition-all duration-1000 ease-in-out"
-                  style={{ width: `0%` /* YOUR DYNAMIC WIDTH */ }}
+                  style={{ width: `${totalBalance > 0 ? Math.min(100, (totalBalance / goal) * 100) : 0}%` /* YOUR DYNAMIC WIDTH */ }}
                 ></div>
               </div>
             </div>
@@ -65,6 +70,8 @@ export default function FinancePro() {
                   type="number"
                   className="bg-transparent text-3xl font-black text-white outline-none w-full border-b border-transparent focus:border-slate-700 transition-all"
                   placeholder="0"
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
                   /* YOUR VALUE & ONCHANGE */
                 />
               </div>
@@ -176,13 +183,19 @@ export default function FinancePro() {
                         {item.description}
                       </h4>
                       <p className="text-[10px] text-slate-500 font-black uppercase tracking-tighter">
-                        {item.id}
+                        ID: {item.id}{" "}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-8">
-                    <span className={`text-xl font-black ${item.type === "expense" ? "text-rose-400" : "text-emerald-400"}`}>
+                    <span
+                      className={`text-xl font-black ${
+                        item.type === "expense"
+                          ? "text-rose-400"
+                          : "text-emerald-400"
+                      }`}
+                    >
                       {item.type === "expense" ? "-" : "+"}${item.amount}
                     </span>
                     <button className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
