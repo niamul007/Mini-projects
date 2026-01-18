@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useOptimistic } from "react";
 
 export default function FinancePro() {
   // --- [ YOUR LOGIC / STATES GO HERE ] ---
@@ -19,13 +19,21 @@ export default function FinancePro() {
 
     setTransactions([...transactions, newItem]);
   }
+
+  const delTransaction = (toDelId)=>{
+    const Updateitem = transactions.filter(item=> item.id !== toDelId)
+    setTransactions(Updateitem)
+  }
+
+
+
   const totalIncome = transactions
     .filter((item) => item.type === "income")
     .reduce((acc, curr) => acc + curr.amount, 0);
   const totalExpense = transactions
     .filter((item) => item.type === "expense")
     .reduce((acc, curr) => acc + curr.amount, 0);
-    
+
   const totalBalance = totalIncome - totalExpense;
   console.log(transactions);
   console.log(totalBalance);
@@ -198,7 +206,7 @@ export default function FinancePro() {
                     >
                       {item.type === "expense" ? "-" : "+"}${item.amount}
                     </span>
-                    <button className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
+                    <button onClick={()=> delTransaction(item.id)} className="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-xl hover:bg-rose-500/20 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100">
                       🗑️
                     </button>
                   </div>
