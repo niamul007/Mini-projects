@@ -1,6 +1,5 @@
 import http from "node:http"; // Use the 'node:' prefix for clarity
 import getAllLocations from "./byPass.js"; // Added .js extension
-import data from "./data.js";
 
 const PORT = 3000;
 const HOST = "localhost";
@@ -20,8 +19,8 @@ const server = http.createServer(async (req, res) => {
         null,
         2
       );
+      
       res.writeHead(200, { "Content-Type": "application/json" });
-
       res.end(responseData);
     }
 
