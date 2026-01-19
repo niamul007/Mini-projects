@@ -9,26 +9,29 @@ const server = http.createServer(async (req, res) => {
 
     if (req.url === "/api" && req.method === "GET") {
       // 1. Rename this from 'res' to 'responseData'
-      const responseData = JSON.stringify({
+      const destination = JSON.stringify({
         message: "Welcome to the Locations API",
         total_locations: locations.length,
         locations: locations.map(loc => loc.name),
       });
-
       // 2. Now 'res' correctly refers to the Node.js Response object
       res.writeHead(200, { "Content-Type": "application/json" });
-      return res.end(responseData);
+      return res.end(destination);
     }
 
-    if (req.url === "/" && req.method === "GET") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      const data = { message: "Hello! To find locations, visit /api" };
-      return res.end(JSON.stringify(data));
+    else if(req.url.startsWith('/api/continent') && req.method === "GET") {
+        const continent = req.url.split('/').pop();
+        const filterData = locations.filter(loc => loc.continent.toLowerCase() === continent.toLowerCase());
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({
+            message: `Locations in ${continent}`,
+            total_locations: filterData.length,
+            locations: filterData.map(loc => loc.name),
+        }));
+        
+    }else{
+        res.writeHead(404, { "Content-Type": "application/json" });
     }
-
-    // 3. Catch-all for other URLs (so the browser doesn't hang)
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Not Found" }));
 
   } catch (err) {
     // Check if headers were already sent before trying to write 500
