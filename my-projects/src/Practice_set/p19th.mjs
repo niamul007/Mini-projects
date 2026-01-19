@@ -1,47 +1,50 @@
 import http from "node:http"; // Use the 'node:' prefix for clarity
 import getAllLocations from "./byPass.js"; // Added .js extension
+import sendJSON from "./utility.mjs";
+import filterLocation from "./filtering.mjs";
 
-const PORT = 3000;  
+const PORT = 3000;
 const HOST = "localhost";
 const server = http.createServer(async (req, res) => {
   try {
     const locations = await getAllLocations();
-
-    if (req.url === "/api" && req.method === "GET") {
-      // 1. Rename this from 'res' to 'responseData'
-      const destination = JSON.stringify({
+    const cleanUrl = req.url.replace(/\/$/, "").toLowerCase();
+    if (cleanUrl === "/api" && req.method === "GET") {
+      return sendJSON(res, 200, {
         message: "Welcome to the Locations API",
         total_locations: locations.length,
-        locations: locations.map(loc => loc.name),
+        locations: locations.map((loc) => loc.name),
       });
-      // 2. Now 'res' correctly refers to the Node.js Response object
-      res.writeHead(200, { "Content-Type": "application/json" });
-      return res.end(destination);
     }
 
-    else if(req.url.startsWith('/api/continent') && req.method === "GET") {
-        const continent = req.url.split('/').pop();
-        const filterData = locations.filter(loc => loc.continent.toLowerCase() === continent.toLowerCase());
-        res.writeHead(200, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({
-            message: `Locations in ${continent}`,
-            total_locations: filterData.length,
-            locations: filterData.map(loc => loc.name),
-        }));
-        
-    }else{
-        res.writeHead(404, { "Content-Type": "application/json" });
+    // 2. Continent Route
+    else if (cleanUrl.startsWith("/api/continent/")) {
+      const continent = cleanUrl.split("/").pop();
+      const filtered = filterLocation(locations, continent, null);
+      return sendJSON(res, 200, filtered);
     }
 
+    // 3. Country Route
+    else if (cleanUrl.startsWith("/api/country/")) {
+      const country = cleanUrl.split("/").pop();
+      const filtered = filterLocation(locations, null, country);
+      return sendJSON(res, 200, filtered);
+    }
+
+    // 4. Default 404
+    else {
+      return sendJSON(res, 404, { error: "Route not found" });
+    }
   } catch (err) {
-    // Check if headers were already sent before trying to write 500
+    console.error("DEBUG ERROR:", err.message); // Always log the error to see what went wrong
+
+    // Only send if we haven't already started responding
     if (!res.headersSent) {
-      res.writeHead(500, { "Content-Type": "text/plain" });
+      return sendJSON(res, 500, { error: "Internal Server Error" });
     }
-    return res.end("Server Error occurred.");
   }
 });
 
 server.listen(PORT, HOST, () => {
   console.log(`🚀 Server running at http://${HOST}:${PORT}/api`);
-}   );
+});
