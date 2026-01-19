@@ -2,34 +2,51 @@ import React, { useEffect, useOptimistic } from "react";
 
 export default function FinancePro() {
   // --- [ YOUR LOGIC / STATES GO HERE ] ---
-  const [transactions, setTransactions] = React.useState(() => {
-    const saved = localStorage.getItem("transactions");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [transactions, setTransactions] = React.useState([]);
   const [goal, setGoal] = React.useState(6000);
 
-  function addTransaction(formData) {
-    const description = formData.get("description");
-    const amount = formData.get("amount");
-    const type = formData.get("type");
-
+  async function addTransaction(formData) {
     const newItem = {
       id: Date.now(),
-      description: description,
-      amount: Number(amount),
-      type: type,
+      description: formData.get("description"),
+      amount: Number(formData.get("amount")),
+      type: formData.get("type"),
     };
 
-    setTransactions([...transactions, newItem]);
+    // Send to server
+    const response = await fetch("http://localhost:5000/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newItem),
+    });
+
+    if (response.ok) {
+      // If server says OK, update our UI list
+      setTransactions([...transactions, newItem]);
+    }
   }
 
+  // Replace your old useEffect with this:
   useEffect(() => {
-    localStorage.setItem("transactions" ,JSON.stringify(transactions))
-  },[transactions]);
+    fetch("http://localhost:5000/api/transactions")
+      .then((res) => res.json())
+      .then((data) => setTransactions(data))
+      .catch((err) => console.log("Error fetching:", err));
+  }, []);
+  
+  const delTransaction = async (toDelId) => {
+    // 1. Tell the Server to delete it
+    try {
+      await fetch(`http://localhost:5000/api/transactions/${toDelId}`, {
+        method: "DELETE",
+      });
 
-  const delTransaction = (toDelId) => {
-    const Updateitem = transactions.filter((item) => item.id !== toDelId);
-    setTransactions(Updateitem);
+      // 2. Update the UI state so it disappears immediately
+      const updatedItems = transactions.filter((item) => item.id !== toDelId);
+      setTransactions(updatedItems);
+    } catch (err) {
+      console.error("Failed to delete:", err);
+    }
   };
 
   const totalIncome = transactions
@@ -188,7 +205,10 @@ export default function FinancePro() {
           <div className="lg:col-span-8 space-y-4">
             <div className="flex justify-between items-center mb-6 px-4">
               <h3 className="font-bold text-slate-400">History</h3>
-              <button onClick={()=> { localStorage.clear(); setTransactions([]); }} className="text-[10px] font-black text-indigo-500 uppercase hover:text-indigo-400">
+              <button
+                onClick={() => setTransactions([])}
+                className="text-[10px] font-black text-indigo-500 uppercase hover:text-indigo-400"
+              >
                 Clear All
               </button>
             </div>
