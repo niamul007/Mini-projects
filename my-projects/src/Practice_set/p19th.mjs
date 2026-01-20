@@ -2,14 +2,19 @@ import http from "node:http"; // Use the 'node:' prefix for clarity
 import getAllLocations from "./byPass.js"; // Added .js extension
 import sendJSON from "./utility.mjs";
 import filterLocation from "./filtering.mjs";
+import path from "node:path";
+
 
 const PORT = 3000;
 const HOST = "localhost";
 const server = http.createServer(async (req, res) => {
   try {
+    const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    const obj = Object.fromEntries(urlObj.searchParams);
+
     const locations = await getAllLocations();
     const cleanUrl = req.url.replace(/\/$/, "").toLowerCase();
-    if (cleanUrl === "/api" && req.method === "GET") {
+    if (urlObj.pathname === "/api" && req.method === "GET") {
       return sendJSON(res, 200, {
         message: "Welcome to the Locations API",
         total_locations: locations.length,
@@ -18,15 +23,15 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 2. Continent Route
-    else if (cleanUrl.startsWith("/api/continent/")) {
-      const continent = cleanUrl.split("/").pop();
+    else if (urlObj.pathname.startsWith("/api/continent/")) {
+      const continent = urlObj.pathname.split("/").pop();
       const filtered = filterLocation(locations, continent, null);
       return sendJSON(res, 200, filtered);
     }
 
     // 3. Country Route
-    else if (cleanUrl.startsWith("/api/country/")) {
-      const country = cleanUrl.split("/").pop();
+    else if (urlObj.pathname.startsWith("/api/country/")) {
+      const country = urlObj.pathname.split("/").pop();
       const filtered = filterLocation(locations, null, country);
       return sendJSON(res, 200, filtered);
     }
