@@ -4,17 +4,23 @@ import sendJSON from "./utility.mjs";
 import filterLocation from "./filtering.mjs";
 import path from "node:path";
 
-
 const PORT = 3000;
 const HOST = "localhost";
 const server = http.createServer(async (req, res) => {
   try {
     const urlObj = new URL(req.url, `http://${req.headers.host}`);
-    const obj = Object.fromEntries(urlObj.searchParams);
-
     const locations = await getAllLocations();
-    const cleanUrl = req.url.replace(/\/$/, "").toLowerCase();
+
+    // 1. Base API - Works for /api OR /api?country=japan
     if (urlObj.pathname === "/api" && req.method === "GET") {
+      const country = urlObj.searchParams.get("country");
+      const continent = urlObj.searchParams.get("continent");
+
+      if (country || continent) {
+        const filtered = filterLocation(locations, continent, country);
+        return sendJSON(res, 200, filtered);
+      }
+
       return sendJSON(res, 200, {
         message: "Welcome to the Locations API",
         total_locations: locations.length,
@@ -22,28 +28,29 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    // 2. Continent Route
+    // 2. Continent Route - Works for /api/continent/asia
     else if (urlObj.pathname.startsWith("/api/continent/")) {
-      const continent = urlObj.pathname.split("/").pop();
-      const filtered = filterLocation(locations, continent, null);
+      // Get 'asia' from the URL path
+      const continentFromPath = urlObj.pathname.split("/").pop(); 
+      // Filter using that path value
+      const filtered = filterLocation(locations, continentFromPath, null);
       return sendJSON(res, 200, filtered);
     }
 
-    // 3. Country Route
+    // 3. Country Route - Works for /api/country/japan
     else if (urlObj.pathname.startsWith("/api/country/")) {
-      const country = urlObj.pathname.split("/").pop();
-      const filtered = filterLocation(locations, null, country);
+      // Get 'japan' from the URL path
+      const countryFromPath = urlObj.pathname.split("/").pop();
+      // Filter using that path value
+      const filtered = filterLocation(locations, null, countryFromPath);
       return sendJSON(res, 200, filtered);
     }
 
-    // 4. Default 404
     else {
       return sendJSON(res, 404, { error: "Route not found" });
     }
   } catch (err) {
-    console.error("DEBUG ERROR:", err.message); // Always log the error to see what went wrong
-
-    // Only send if we haven't already started responding
+    console.error("DEBUG ERROR:", err.stack); // .stack gives you the line number!
     if (!res.headersSent) {
       return sendJSON(res, 500, { error: "Internal Server Error" });
     }
