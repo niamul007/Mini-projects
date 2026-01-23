@@ -16,12 +16,14 @@ const server = http.createServer(async (req, res) => {
     if (urlObject.pathname === "/api" && req.method === "GET") {
       const continent = urlObject.searchParams.get("continent");
       const country = urlObject.searchParams.get("country");
+      const is_open_to_public = urlObject.searchParams.get("is_open_to_public");
 
       if (continent || country) {
         const filteredDestinations = filterLocation(
           destinations,
           continent,
           country,
+          is_open_to_public
         );
         sendJSON(res, 200, filteredDestinations);
         return;
