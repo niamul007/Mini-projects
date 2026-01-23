@@ -6,33 +6,60 @@ import filterLocation from "./filtering.mjs";
 const PORT = 3000;
 const HOSTNAME = "localhost";
 
-const server = http.createServer(async(req, res) => {
+const server = http.createServer(async (req, res) => {
   try {
-
     const urlObject = new URL(req.url, `http://${req.headers.host}`);
     const obj = Object.fromEntries(urlObject.searchParams);
 
-    const destions = await getAllLocations();
+    const destinations = await getAllLocations();
 
-    if(urlObject.pathname.startsWith('/api/continent') && req.method === 'GET') {
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      const filteredDestinations = filterLocation(destions);
-      sendJSON(res, 200, filteredDestinations);
-      res.end(JSON.stringify(filteredDestinations ,null,2));
-      return;
-    }else{
-        res.statusCode = 404;
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify({ message: "Route not found" }));
+    if (urlObject.pathname === "/api" && req.method === "GET") {
+      const continent = urlObject.searchParams.get("continent");
+      const country = urlObject.searchParams.get("country");
+
+      if (continent || country) {
+        const filteredDestinations = filterLocation(
+          destinations,
+          continent,
+          country,
+        );
+        sendJSON(res, 200, filteredDestinations);
         return;
-    }
+      }
 
+      sendJSON(res, 200, {
+        message: "Welcome to the Locations API",
+        total_locations: destinations.length,
+        locations: destinations.map((loc) => loc.name),
+      });
+      return;
+    } else if (urlObject.pathname.startsWith("/api/continent/")) {
+      const continentFromPath = urlObject.pathname.split("/").pop();
+      const filteredDestinations = filterLocation(
+        destinations,
+        continentFromPath,
+        null,
+      );
+      sendJSON(res, 200, filteredDestinations);
+      return;
+    } else if (urlObject.pathname.startsWith("/api/country/")) {
+      const countryFromPath = urlObject.pathname.split("/").pop();
+      const filteredDestinations = filterLocation(
+        destinations,
+        null,
+        countryFromPath,
+      );
+      sendJSON(res, 200, filteredDestinations);
+      return;
+    } else {
+      sendJSON(res, 404, { message: "Route not found" });
+      return;
+    }
   } catch (err) {
     console.error("Error parsing URL:", err);
   }
 });
 
 server.listen(PORT, HOSTNAME, () => {
-  console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
+  console.log(`Server running at http://${HOSTNAME}:${PORT}/api`);
 });
