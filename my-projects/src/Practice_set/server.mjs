@@ -1,5 +1,7 @@
 import http from "node:http";
 import getAllLocations from "./byPass.js"; // Added .mjs extension
+import sendJSON from "./utility.mjs";
+import filterLocation from "./filtering.mjs";
 
 const PORT = 3000;
 const HOSTNAME = "localhost";
@@ -12,10 +14,12 @@ const server = http.createServer(async(req, res) => {
 
     const destions = await getAllLocations();
 
-    if(urlObject.pathname  === '/api' && req.method === 'GET') {
+    if(urlObject.pathname.startsWith('/api/continent') && req.method === 'GET') {
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(destions ,null,2));
+      const filteredDestinations = filterLocation(destions);
+      sendJSON(res, 200, filteredDestinations);
+      res.end(JSON.stringify(filteredDestinations ,null,2));
       return;
     }else{
         res.statusCode = 404;
