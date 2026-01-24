@@ -2,9 +2,16 @@ import http from "node:http";
 import getAllLocations from "./byPass.js"; // Added .mjs extension
 import sendJSON from "./utility.mjs";
 import filterLocation from "./filtering.mjs";
+import  path from "node:path";
 
 const PORT = 3000;
 const HOSTNAME = "localhost";
+const __dirname = import.meta.dirname;
+console.log(__dirname)
+const filterFilePath = path.join(__dirname, "Practice_set", "exmple.html");
+const relativePath = path.relative(process.cwd(), filterFilePath);
+console.log(`Relative path to filter file: ${relativePath}`);
+console.log(`Filter file path: ${filterFilePath}`);
 
 const server = http.createServer(async (req, res) => {
   try {
